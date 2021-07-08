@@ -50,6 +50,18 @@ app.post('/todos', (req, res) => {
     .catch(error => console.log(error))
 })
 
+// 瀏覽特定todo的詳細資料
+app.get('/todos/:id', (req, res) => {
+  //取得該todo的id，作為資料查找
+  const id = req.params.id
+  //請model向資料庫找該筆資料
+  return Todo.findById(id)
+    //找到資料後回傳到這，要先把它清理成js物件
+    .lean()
+    .then(todo => res.render('detail', { todo }))
+    .catch(error => console.log(error))
+})
+
 app.listen(port, () => {
   console.log(`app is listening on http://localhost:${port}`)
 })
