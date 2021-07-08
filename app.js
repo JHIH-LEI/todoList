@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const exphbs = require('express-handlebars')
 const Todo = require('./models/todo')
+const todo = require('./models/todo')
 const app = express()
 const port = 3000
 
@@ -26,11 +27,26 @@ db.on('error', () => {
   console.log('mongodb error!')
 })
 
+app.use(express.urlencoded({ extended: true }))
+
 app.get('/', (req, res) => {
   // 藉由該資料的model跟資料庫要所有的資料顯示
   Todo.find()
     .lean() //回傳js陣列資料
     .then(todos => res.render('index', { todos }))
+    .catch(error => console.log(error))
+})
+
+// 讓使用者新增資料的路由
+app.get('/todos/new', (req, res) => {
+  res.render('new')
+})
+
+//將表單資料送入資料庫
+app.post('/todos', (req, res) => {
+  const name = req.body.name
+  return Todo.create({ name })
+    .then(() => res.redirect('/'))
     .catch(error => console.log(error))
 })
 
