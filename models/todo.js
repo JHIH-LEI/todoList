@@ -6,6 +6,10 @@ const todoSchema = new Schema({
   name: {
     type: String, //資料型別為字串
     require: true, //為必填項
+  },
+  isDone: {
+    type: Boolean,
+    default: false,
   }
 })
 

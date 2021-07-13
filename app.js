@@ -74,13 +74,14 @@ app.get('/todos/:id/edit', (req, res) => {
 //更新資料
 app.post('/todos/:id/edit', (req, res) => {
   //接住表單資料
-  const name = req.body.name
+  const { name, isDone } = req.body
   const id = req.params.id
   return Todo.findById(id)
     //把資料送到資料庫中更新
     //這邊不能用lean是因為他會變成單純是js陣列資料，但這筆資料是需要存到資料庫中的，會需要資料庫的格式
     .then(todo => {
       todo.name = name
+      todo.isDone = isDone === 'on'  //右邊會回傳true or false,在存到資料屬性中
       return todo.save()
     })
     .then(() => res.redirect(`/todos/${id}`))
