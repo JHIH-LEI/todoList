@@ -1,6 +1,9 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const exphbs = require('express-handlebars')
+
+const methodOverride = require('method-override')
+
 const Todo = require('./models/todo')
 const todo = require('./models/todo')
 const app = express()
@@ -27,7 +30,8 @@ db.on('error', () => {
   console.log('mongodb error!')
 })
 
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }))//對所有的req先做處理
+app.use(methodOverride('_method')) //路由中queryString有_method的http請求會先經過methodOverride的處理
 
 app.get('/', (req, res) => {
   // 藉由該資料的model跟資料庫要所有的資料顯示
@@ -73,7 +77,7 @@ app.get('/todos/:id/edit', (req, res) => {
 })
 
 //更新資料
-app.post('/todos/:id/edit', (req, res) => {
+app.put('/todos/:id', (req, res) => {
   //接住表單資料
   const { name, isDone } = req.body
   const id = req.params.id
@@ -90,7 +94,7 @@ app.post('/todos/:id/edit', (req, res) => {
 })
 
 //刪除todo
-app.post('/todos/:id/delete', (req, res) => {
+app.delete('/todos/:id', (req, res) => {
   const id = req.params.id
   return Todo.findById(id)
     .then(todo => todo.remove())
