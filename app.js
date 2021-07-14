@@ -4,9 +4,8 @@ const exphbs = require('express-handlebars')
 
 const methodOverride = require('method-override')
 
-const Todo = require('./models/todo')
-const todo = require('./models/todo')
 const app = express()
+const routes = require('./routes') //載入總路由器
 const port = 3000
 
 // 設定樣板engine
@@ -33,74 +32,7 @@ db.on('error', () => {
 app.use(express.urlencoded({ extended: true }))//對所有的req先做處理
 app.use(methodOverride('_method')) //路由中queryString有_method的http請求會先經過methodOverride的處理
 
-app.get('/', (req, res) => {
-  // 藉由該資料的model跟資料庫要所有的資料顯示
-  Todo.find()
-    .lean() //回傳js陣列資料
-    .sort({_id:'asc'}) //根據新增todo的時間來排序
-    .then(todos => res.render('index', { todos }))
-    .catch(error => console.log(error))
-})
-
-// 讓使用者新增資料的路由
-app.get('/todos/new', (req, res) => {
-  res.render('new')
-})
-
-//新增todo,將表單資料送入資料庫
-app.post('/todos', (req, res) => {
-  const name = req.body.name
-  return Todo.create({ name })
-    .then(() => res.redirect('/'))
-    .catch(error => console.log(error))
-})
-
-// 瀏覽特定todo的詳細資料
-app.get('/todos/:id', (req, res) => {
-  //取得該todo的id，作為資料查找
-  const id = req.params.id
-  //請model向資料庫找該筆資料
-  return Todo.findById(id)
-    //找到資料後回傳到這，要先把它清理成js物件
-    .lean()
-    .then(todo => res.render('detail', { todo }))
-    .catch(error => console.log(error))
-})
-
-//某todo的修改頁面
-app.get('/todos/:id/edit', (req, res) => {
-  const id = req.params.id
-  return Todo.findById(id)
-    .lean()
-    .then(todo => res.render('edit', { todo }))
-    .catch(error => console.log(error))
-})
-
-//更新資料
-app.put('/todos/:id', (req, res) => {
-  //接住表單資料
-  const { name, isDone } = req.body
-  const id = req.params.id
-  return Todo.findById(id)
-    //把資料送到資料庫中更新
-    //這邊不能用lean是因為他會變成單純是js陣列資料，但這筆資料是需要存到資料庫中的，會需要資料庫的格式
-    .then(todo => {
-      todo.name = name
-      todo.isDone = isDone === 'on'  //右邊會回傳true or false,在存到資料屬性中
-      return todo.save()
-    })
-    .then(() => res.redirect(`/todos/${id}`))
-    .catch(error => console.log(error))
-})
-
-//刪除todo
-app.delete('/todos/:id', (req, res) => {
-  const id = req.params.id
-  return Todo.findById(id)
-    .then(todo => todo.remove())
-    .then(() => res.redirect('/'))
-    .catch(error => console.log(error))
-})
+app.use(routes) //使用總路由器
 
 app.listen(port, () => {
   console.log(`app is listening on http://localhost:${port}`)
