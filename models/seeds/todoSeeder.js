@@ -11,4 +11,5 @@ db.once('open', () => {
       name: `name-${i}`
     })
   }
+  db.close()
 })
