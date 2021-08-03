@@ -1,4 +1,5 @@
 const express = require('express')
+const session = require('express-session')
 const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
 
@@ -13,6 +14,11 @@ const port = 3000
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
+app.use(session({
+  secret: 'HaHa', //設定密鑰，將session id跟密鑰產出簽章，伺服器會檢查簽章是否有效，能防止竄改冒用的疑慮
+  resave: false,
+  saveUninitialized: true
+}))
 app.use(express.urlencoded({ extended: true }))//對所有的req先做處理
 app.use(methodOverride('_method')) //路由中queryString有_method的http請求會先經過methodOverride的處理
 
