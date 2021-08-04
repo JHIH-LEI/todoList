@@ -1,5 +1,7 @@
 const express = require('express')
 const session = require('express-session')
+// 載入passport設定檔，要載在session之後
+const usePassport = require('./config/passport')
 const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
 
@@ -21,6 +23,8 @@ app.use(session({
 }))
 app.use(express.urlencoded({ extended: true }))//對所有的req先做處理
 app.use(methodOverride('_method')) //路由中queryString有_method的http請求會先經過methodOverride的處理
+
+usePassport(app)
 
 app.use(routes) //使用總路由器
 
