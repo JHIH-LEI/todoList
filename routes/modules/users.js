@@ -36,4 +36,9 @@ router.post('/register', (req, res) => {
   })
 })
 
+router.get('/logout', (req, res) => {
+  req.logout() //passport將session中的登陸狀態清掉
+  res.redirect('/users/login')
+})
+
 module.exports = router
