@@ -25,7 +25,12 @@ app.use(express.urlencoded({ extended: true }))//對所有的req先做處理
 app.use(methodOverride('_method')) //路由中queryString有_method的http請求會先經過methodOverride的處理
 
 usePassport(app)
-
+// 設定讓前端樣板可以拿到的參數，放在回應參數
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.isAuthenticated()
+  res.locals.user = req.user
+  next()
+})
 app.use(routes) //使用總路由器
 
 app.listen(port, () => {

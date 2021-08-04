@@ -37,7 +37,7 @@ router.post('/register', (req, res) => {
 })
 
 router.get('/logout', (req, res) => {
-  req.logout() //passport將session中的登陸狀態清掉
+  req.logout() //passport將session中的登陸狀態清掉，以及req.user清掉
   res.redirect('/users/login')
 })
 
