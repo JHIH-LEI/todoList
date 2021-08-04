@@ -5,9 +5,10 @@ const router = express.Router()
 const home = require('./modules/home.js')
 const todo = require('./modules/todo.js')
 const users = require('./modules/users')
+const { authenticator } = require('../middleware/auth')
 
-router.use('/', home)
-router.use('/todos', todo)
+router.use('/todos', authenticator, todo)
 router.use('/users', users)
+router.use('/', authenticator, home)
 // 匯出路由器
 module.exports = router
