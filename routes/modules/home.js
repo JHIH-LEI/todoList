@@ -3,10 +3,11 @@ const router = express.Router()
 const Todo = require('../../models/todo.js')
 
 router.get('/', (req, res) => {
-  // 藉由該資料的model跟資料庫要所有的資料顯示
-  Todo.find()
+  // 顯示該使用者的所有todo
+  const userId = req.user._id //變數設定，根據登陸者的userId
+  Todo.find({ userId })
     .lean() //回傳js陣列資料
-    .sort({_id:'asc'}) //根據新增todo的時間來排序
+    .sort({ _id: 'asc' }) //根據新增todo的時間來排序
     .then(todos => res.render('index', { todos }))
     .catch(error => console.log(error))
 })
