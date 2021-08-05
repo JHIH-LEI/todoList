@@ -11,8 +11,7 @@ router.get('/login', (req, res) => {
 // 驗證req 登陸狀態
 router.post('/login', passport.authenticate('local', {
   successRedirect: '/',
-  failureFlash: '帳號或密碼錯誤',
-  failureRedirect: '/users/login'
+  failureRedirect: '/users/login',
 }))
 
 router.get('/register', (req, res) => {

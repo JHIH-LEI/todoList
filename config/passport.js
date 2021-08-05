@@ -14,11 +14,11 @@ module.exports = app => {
       .then(user => {
         if (!user) {
           req.flash('warning_msg', '此Email尚未註冊')
-          return done(null, false, { message: 'Email have not registered!' })
+          return done(null, false)
         }
         if (user.password !== password) {
           req.flash('warning_msg', '帳號或密碼錯誤')
-          return done(null, false, { message: 'Email or password incorrect.' })
+          return done(null, false)
         }
         return done(null, user)
       })
