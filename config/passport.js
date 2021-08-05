@@ -2,6 +2,7 @@ const passport = require('passport')
 // 載入相關模組,在此為登陸策略中的本地策略
 const localStrategy = require('passport-local').Strategy
 const User = require('../models/user')
+const bcrypt = require('bcryptjs')
 
 // 直接匯出函式給app.js，並接受app作為參數
 module.exports = app => {
@@ -16,11 +17,13 @@ module.exports = app => {
           req.flash('warning_msg', '此Email尚未註冊')
           return done(null, false)
         }
-        if (user.password !== password) {
-          req.flash('warning_msg', '帳號或密碼錯誤')
-          return done(null, false)
-        }
-        return done(null, user)
+        return bcrypt.compare(password, user.password).then(isMatch => {
+          if (!isMatch) {
+            req.flash('warning_msg', '帳號或密碼錯誤')
+            return done(null, false)
+          }
+          return done(null, user)
+        })
       })
       .catch(err => done(err, false))
   }))
