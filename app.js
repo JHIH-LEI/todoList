@@ -4,7 +4,7 @@ const session = require('express-session')
 const usePassport = require('./config/passport')
 const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
-
+const flash = require('connect-flash')
 require('./config/mongoose.js') //載入mongoose連線設定
 const routes = require('./routes') //載入總路由器
 
@@ -23,12 +23,14 @@ app.use(session({
 }))
 app.use(express.urlencoded({ extended: true }))//對所有的req先做處理
 app.use(methodOverride('_method')) //路由中queryString有_method的http請求會先經過methodOverride的處理
-
+app.use(flash())
 usePassport(app)
 // 設定讓前端樣板可以拿到的參數，放在回應參數
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.isAuthenticated()
   res.locals.user = req.user
+  res.locals.success_msg = req.flash('success_msg')
+  res.locals.warning_msg = req.flash('warning_msg')
   next()
 })
 app.use(routes) //使用總路由器

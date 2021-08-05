@@ -9,13 +9,15 @@ module.exports = app => {
   app.use(passport.initialize())
   app.use(passport.session())
   // 設定登陸策略，第一個參數：把預設username改為email，第二個參數：函式，要做登陸策略的相關設定
-  passport.use(new localStrategy({ usernameField: 'email' }, (email, password, done) => {
+  passport.use(new localStrategy({ usernameField: 'email', passReqToCallback: true }, (req, email, password, done) => {
     User.findOne({ email })
       .then(user => {
         if (!user) {
+          req.flash('warning_msg', '此Email尚未註冊')
           return done(null, false, { message: 'Email have not registered!' })
         }
         if (user.password !== password) {
+          req.flash('warning_msg', '帳號或密碼錯誤')
           return done(null, false, { message: 'Email or password incorrect.' })
         }
         return done(null, user)
