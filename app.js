@@ -31,10 +31,10 @@ app.use((req, res, next) => {
   res.locals.user = req.user
   res.locals.success_msg = req.flash('success_msg')
   res.locals.warning_msg = req.flash('warning_msg')
+  res.locals.error = req.flash('error') //登陸驗證的錯誤訊息
   next()
 })
 app.use(routes) //使用總路由器
-
 app.listen(port, () => {
   console.log(`app is listening on http://localhost:${port}`)
 })

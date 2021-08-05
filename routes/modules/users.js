@@ -13,6 +13,7 @@ router.get('/login', (req, res) => {
 router.post('/login', passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/users/login',
+  failureFlash: true, //使用登陸策略，驗證cb中的不同錯誤訊息
 }))
 
 router.get('/register', (req, res) => {
