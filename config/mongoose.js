@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 // 設定資料庫連線
-mongoose.connect('mongodb://localhost/todo-list', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
 
 // 儲存資料庫連線的狀態，以供日後操作
 const db = mongoose.connection

@@ -5,11 +5,14 @@ const usePassport = require('./config/passport')
 const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
 const flash = require('connect-flash')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 require('./config/mongoose.js') //載入mongoose連線設定
 const routes = require('./routes') //載入總路由器
 
 const app = express()
-const port = 3000
+const port = process.env.PORT
 
 // 設定樣板engine
 // 新增名為hbs的樣板engine，並做一些參數設定
@@ -17,7 +20,7 @@ app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
 app.use(session({
-  secret: 'HaHa', //設定密鑰，將session id跟密鑰產出簽章，伺服器會檢查簽章是否有效，能防止竄改冒用的疑慮
+  secret: process.env.SESSION_SECRET, //設定密鑰，將session id跟密鑰產出簽章，伺服器會檢查簽章是否有效，能防止竄改冒用的疑慮
   resave: false,
   saveUninitialized: true
 }))
