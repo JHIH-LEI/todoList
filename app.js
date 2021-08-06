@@ -6,6 +6,7 @@ const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
 const flash = require('connect-flash')
 if (process.env.NODE_ENV !== 'production') {
+  //將敏感資訊放到環境變數中
   require('dotenv').config()
 }
 require('./config/mongoose.js') //載入mongoose連線設定
